@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FDJ</string>
+
+    <string name="ic_fdj_cd">Logo Française Des Jeux</string>
+    <string name="search">Rechercher</string>
+
+    <string name="team_banner_cd">Bannière de l\'équipe</string>
+</resources>

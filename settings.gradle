@@ -1,0 +1,4 @@
+include ':view'
+include ':core'
+include ':app'
+rootProject.name = "FDJ"
