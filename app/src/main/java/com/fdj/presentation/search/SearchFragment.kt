@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fdj.R
@@ -13,6 +12,7 @@ import com.fdj.core.domain.Team
 import com.fdj.framework.FDJ
 import com.fdj.framework.di.DaggerPresenterFactory
 import com.fdj.presentation.MainPresenter
+import com.fdj.presentation.presenter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
 
     @Inject
     lateinit var presenterFactory: DaggerPresenterFactory
-    private val presenter by viewModels<MainPresenter> { presenterFactory }
+    private val presenter by presenter<MainPresenter> { presenterFactory }
 
     private var viewAdapter: TeamsAdapter? = null
     private var searchView: SearchView? = null

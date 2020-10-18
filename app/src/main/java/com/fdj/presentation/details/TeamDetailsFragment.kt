@@ -14,6 +14,7 @@ import com.fdj.databinding.FragmentTeamDetailsBinding
 import com.fdj.framework.FDJ
 import com.fdj.framework.di.DaggerPresenterFactory
 import com.fdj.presentation.MainPresenter
+import com.fdj.presentation.presenter
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class TeamDetailsFragment : Fragment(), MainPresenter.DetailsView {
 
     @Inject
     lateinit var presenterFactory: DaggerPresenterFactory
-    private val presenter by viewModels<MainPresenter> { presenterFactory }
+    private val presenter by presenter<MainPresenter> { presenterFactory }
 
     private var binding: FragmentTeamDetailsBinding? = null
 

@@ -40,12 +40,12 @@ class MainPresenter @Inject constructor() :
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun enable() {
+    private fun enable() {
         enabled = true
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun disable() {
+    private fun disable() {
         enabled = false
     }
 
