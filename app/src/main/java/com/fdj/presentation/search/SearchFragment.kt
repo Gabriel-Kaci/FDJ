@@ -5,15 +5,25 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fdj.R
 import com.fdj.core.domain.Team
+import com.fdj.framework.FDJ
+import com.fdj.framework.di.DaggerPresenterFactory
+import com.fdj.presentation.MainPresenter
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_search.*
+import javax.inject.Inject
 
 
-class SearchFragment : Fragment(), SearchPresenter.View {
-    private var presenter: SearchPresenter? = null
+class SearchFragment : Fragment(), MainPresenter.SearchView {
+
+    @Inject
+    lateinit var presenterFactory: DaggerPresenterFactory
+    private val presenter by viewModels<MainPresenter> { presenterFactory }
+
     private var viewAdapter: TeamsAdapter? = null
     private var searchView: SearchView? = null
 
@@ -22,8 +32,10 @@ class SearchFragment : Fragment(), SearchPresenter.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        FDJ.dagger.inject(this)
         setHasOptionsMenu(true)
-        presenter = SearchPresenter(this, this.lifecycle)
+
+        presenter.bindSearchView(this, this.lifecycle)
 
         viewAdapter = TeamsAdapter(listOf()).apply {
             setOnItemClickListener { _, team ->
@@ -38,13 +50,13 @@ class SearchFragment : Fragment(), SearchPresenter.View {
             adapter = viewAdapter
         }
 
-        presenter?.updateTeamsList("")
+        presenter.updateTeamsList("")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search, menu)
         searchView = menu.findItem(R.id.search).actionView as SearchView
-        presenter?.updateAutocomplete("")
+        presenter.updateAutocomplete("")
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -52,8 +64,8 @@ class SearchFragment : Fragment(), SearchPresenter.View {
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                presenter?.updateAutocomplete(text)
-                presenter?.updateTeamsList(text)
+                presenter.updateAutocomplete(text)
+                presenter.updateTeamsList(text)
                 return true
             }
 
@@ -74,11 +86,23 @@ class SearchFragment : Fragment(), SearchPresenter.View {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun updateTeamsList(teams: List<Team>) {
-        viewAdapter?.updateData(teams)
+    override fun updateTeamsList(teams: List<Team>?) {
+        if (teams == null)
+            showNoInternetSnackbar()
+        else
+            viewAdapter?.updateData(teams)
     }
 
-    override fun setAutocomplete(cursor: Cursor) {
-        searchView?.suggestionsAdapter = AutocompleteSearchAdapter(requireContext(), cursor)
+    override fun setAutocomplete(cursor: Cursor?) {
+        if (cursor == null)
+            showNoInternetSnackbar()
+        else
+            searchView?.suggestionsAdapter = AutocompleteSearchAdapter(requireContext(), cursor)
     }
+
+    private fun showNoInternetSnackbar() = Snackbar.make(
+        container,
+        getString(R.string.no_internet_connection),
+        Snackbar.LENGTH_SHORT
+    ).show()
 }

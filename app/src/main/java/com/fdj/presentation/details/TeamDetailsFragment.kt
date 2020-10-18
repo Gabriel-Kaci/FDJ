@@ -7,17 +7,25 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.fdj.R
 import com.fdj.core.domain.Team
 import com.fdj.databinding.FragmentTeamDetailsBinding
+import com.fdj.framework.FDJ
+import com.fdj.framework.di.DaggerPresenterFactory
+import com.fdj.presentation.MainPresenter
 import com.squareup.picasso.Picasso
+import javax.inject.Inject
 
-class TeamDetailsFragment : Fragment(), TeamDetailsPresenter.View {
+class TeamDetailsFragment : Fragment(), MainPresenter.DetailsView {
     companion object {
         const val ARG_TEAM_NAME = "teamName"
     }
 
-    private var presenter: TeamDetailsPresenter? = null
+    @Inject
+    lateinit var presenterFactory: DaggerPresenterFactory
+    private val presenter by viewModels<MainPresenter> { presenterFactory }
+
     private var binding: FragmentTeamDetailsBinding? = null
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View? {
@@ -29,8 +37,10 @@ class TeamDetailsFragment : Fragment(), TeamDetailsPresenter.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter = TeamDetailsPresenter(this, this.lifecycle)
-        presenter?.updateTeamDetails(requireArguments().getString(ARG_TEAM_NAME) as String)
+        FDJ.dagger.inject(this)
+
+        presenter.bindDetailsView(this, this.lifecycle)
+        presenter.updateTeamDetails(requireArguments().getString(ARG_TEAM_NAME) as String)
     }
 
     override fun updateTeamDetails(team: Team) {

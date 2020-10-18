@@ -14,7 +14,6 @@ class TeamsAdapter(private var items: List<Team>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(TeamView(parent.context))
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.bindData(items[position])
         holder.view.setOnClickListener {
