@@ -8,7 +8,6 @@ import com.fdj.framework.FDJ
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FDJ.dagger.inject(this)
         setContentView(R.layout.activity_main)
 
         findNavController(R.id.fragmentContainer).addOnDestinationChangedListener { _, destination, _ ->
