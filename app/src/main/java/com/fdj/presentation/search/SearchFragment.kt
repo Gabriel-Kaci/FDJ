@@ -9,6 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fdj.R
 import com.fdj.core.domain.Team
+import com.fdj.framework.EspressoIdlingResource
 import com.fdj.framework.FDJ
 import com.fdj.framework.di.DaggerPresenterFactory
 import com.fdj.presentation.MainPresenter
@@ -34,6 +35,7 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
         super.onViewCreated(view, savedInstanceState)
         FDJ.dagger.inject(this)
         setHasOptionsMenu(true)
+        EspressoIdlingResource.decrement()
 
         presenter.bindSearchView(this, this.lifecycle)
 
@@ -49,8 +51,6 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
             layoutManager = GridLayoutManager(context, 2)
             adapter = viewAdapter
         }
-
-        presenter.updateTeamsList("")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -64,6 +64,7 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
             }
 
             override fun onQueryTextChange(text: String): Boolean {
+                EspressoIdlingResource.increment()
                 presenter.updateAutocomplete(text)
                 presenter.updateTeamsList(text)
                 return true
@@ -94,6 +95,7 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
     }
 
     override fun setAutocomplete(cursor: Cursor?) {
+        EspressoIdlingResource.decrement()
         if (cursor == null)
             showNoInternetSnackbar()
         else

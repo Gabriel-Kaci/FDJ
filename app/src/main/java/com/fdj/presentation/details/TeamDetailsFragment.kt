@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.fdj.R
 import com.fdj.core.domain.Team
 import com.fdj.databinding.FragmentTeamDetailsBinding

@@ -28,6 +28,7 @@ class MainPresenter @Inject constructor() :
     private var detailsView: DetailsView? = null
     private var enabled = false
     private val interactor = SportDataInteractor(SportDBDataSource())
+    private var teams: List<Team> = listOf()
 
     fun bindSearchView(view: SearchView, lifecycle: Lifecycle) {
         searchView = view
@@ -39,9 +40,10 @@ class MainPresenter @Inject constructor() :
         lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun enable() {
         enabled = true
+        searchView?.updateTeamsList(teams)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -69,11 +71,12 @@ class MainPresenter @Inject constructor() :
     }
 
     fun updateTeamsList(leagueName: String) {
-        if (!enabled)
+        if (!enabled || leagueName.isEmpty())
             return
 
         launch {
-            searchView?.updateTeamsList(interactor.getTeams(leagueName))
+            teams = interactor.getTeams(leagueName) ?: listOf()
+            searchView?.updateTeamsList(teams)
         }
     }
 
