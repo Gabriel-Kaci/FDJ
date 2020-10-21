@@ -41,6 +41,7 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
 
         viewAdapter = TeamsAdapter(listOf()).apply {
             setOnItemClickListener { _, team ->
+                EspressoIdlingResource.increment()
                 val action = SearchFragmentDirections.showTeam(team.name)
                 NavHostFragment.findNavController(this@SearchFragment).navigate(action)
             }
@@ -92,10 +93,10 @@ class SearchFragment : Fragment(), MainPresenter.SearchView {
             showNoInternetSnackbar()
         else
             viewAdapter?.updateData(teams)
+        EspressoIdlingResource.decrement()
     }
 
     override fun setAutocomplete(cursor: Cursor?) {
-        EspressoIdlingResource.decrement()
         if (cursor == null)
             showNoInternetSnackbar()
         else

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.fdj.R
 import com.fdj.core.domain.Team
 import com.fdj.databinding.FragmentTeamDetailsBinding
+import com.fdj.framework.EspressoIdlingResource
 import com.fdj.framework.FDJ
 import com.fdj.framework.di.DaggerPresenterFactory
 import com.fdj.presentation.MainPresenter
@@ -45,6 +46,7 @@ class TeamDetailsFragment : Fragment(), MainPresenter.DetailsView {
 
     override fun updateTeamDetails(team: Team) {
         binding?.team = team
+        EspressoIdlingResource.decrement()
     }
 }
 
